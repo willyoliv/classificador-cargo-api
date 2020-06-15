@@ -19,6 +19,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 #Carregando o modelo
 NLP = spacy.load('api/Modelo')
+NLP_TESTE = spacy.load('pt_core_news_sm')
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 

@@ -12,6 +12,7 @@ from rest_framework.views import APIView
 import copy
 
 nlp = copy.copy(settings.NLP)
+nlp_teste = copy.copy(settings.NLP_TESTE)
 
 # Create your views here.
 class HistoricoPredict(APIView):
@@ -23,15 +24,12 @@ class HistoricoPredict(APIView):
         if serializer.is_valid():
             try:        
                 historico = request.POST.get('historico')
-                doc = nlp(historico)
-                dicionario = doc.cats
-                categorias = list(dicionario.keys())
-                valores = list(dicionario.values())
-                maior_valor = max(valores)
-                index = valores.index(maior_valor)
-                categoria = categorias[index]
-                return Response({"Cargo":categoria,"Porcentagem":maior_valor}, status.HTTP_200_OK)
+                texto = Historico.removeStopWords(historico, nlp_teste)
+                doc = nlp(texto)
+                categoria, maior_valor = Historico.classificacao(doc.cats)
+                return Response({"Historico":historico, "HistoricoSemStopWords":texto,"Classificação":categoria,"Porcentagem":maior_valor}, status.HTTP_200_OK)
             except Exception as message:
                 return Response({'message': "Erro, verifique o campo enviado!"}, status.HTTP_400_BAD_REQUEST)
             
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
